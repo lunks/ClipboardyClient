@@ -1,17 +1,52 @@
+// ClipboardyClientApp.swift
 import SwiftUI
 
 @main
 struct ClipboardyClientApp: App {
-    private var webSocketManager = WebSocketManager()
-    private var menuBarManager: MenuBarManager!
-
-    init() {
-        menuBarManager = MenuBarManager(webSocketManager: webSocketManager)
-    }
-
+    @Environment(\.openWindow) private var openWindow
+    
+    @StateObject private var webSocketManager = WebSocketManager()
+    @State private var showingSettings = false  // add this state variable
+    
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        MenuBarExtra {
+            Text("ClipboardyClient")
+                .font(.headline)
+            Text((webSocketManager.isConnected ? "Connected" : "Disconnected"))
+                .font(.subheadline)
+            
+            Divider()
+            
+            Button() {
+                NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+            } label: {
+                HStack {
+                    Image(systemName: "gearshape")
+                    Text("Preferences...")
+                }
+            }.keyboardShortcut(",")
+            
+            Divider()
+            
+            Button("Quit") { NSApp.terminate(nil) }
+        } label: {
+            Image(systemName: "clipboard.fill")
         }
+        Settings {
+            SettingsView(webSocketManager: webSocketManager)
+        }
+    }
+}
+
+extension NSApplication {
+    
+    static func show(ignoringOtherApps: Bool = true) {
+        NSApp.setActivationPolicy(.regular)
+        NSApp.activate(ignoringOtherApps: ignoringOtherApps)
+    }
+    
+    static func hide() {
+        NSApp.hide(self)
+        NSApp.setActivationPolicy(.accessory)
     }
 }
