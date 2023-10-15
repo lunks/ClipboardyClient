@@ -15,6 +15,7 @@ class WebSocketManager: ObservableObject {
             }
         }
     }
+    
     lazy var socket: WebSocket = {
         return createWebSocket()
     }()

@@ -6,7 +6,6 @@ struct ClipboardyClientApp: App {
     @Environment(\.openWindow) private var openWindow
     
     @StateObject private var webSocketManager = WebSocketManager()
-    @State private var showingSettings = false  // add this state variable
     
     var body: some Scene {
         MenuBarExtra {
